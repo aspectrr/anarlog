@@ -30,6 +30,8 @@ pub struct SessionParams {
     pub participant_human_ids: Vec<String>,
     #[serde(default)]
     pub self_human_id: Option<String>,
+    #[serde(default)]
+    pub mic_device: Option<String>,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -106,6 +108,7 @@ mod tests {
             mic_device: None,
             participant_human_ids: vec![],
             self_human_id: None,
+            mic_device: None,
         }
     }
 

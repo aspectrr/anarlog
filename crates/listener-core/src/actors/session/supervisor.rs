@@ -644,6 +644,7 @@ mod tests {
                 mic_device: None,
                 participant_human_ids: vec![],
                 self_human_id: None,
+                mic_device: None,
             },
             app_dir: std::env::temp_dir(),
             started_at_instant: Instant::now(),

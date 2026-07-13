@@ -16,6 +16,7 @@ import {
   getAdditionalSpokenLanguages,
 } from "./language";
 import { MainLanguageView } from "./main-language";
+import { MicrophoneSelector } from "./microphone";
 import { NotificationSettingsView } from "./notification";
 import { Permissions } from "./permissions";
 import { SpokenLanguagesView } from "./spoken-languages";
@@ -407,6 +408,13 @@ function SettingsAppContent({
             </form.Field>
           )}
         </form.Field>
+      </div>
+
+      <div>
+        <h2 className="mb-4 font-sans text-lg font-semibold">
+          <Trans>Audio</Trans>
+        </h2>
+        <MicrophoneSelector />
       </div>
 
       <div>
