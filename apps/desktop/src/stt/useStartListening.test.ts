@@ -191,9 +191,11 @@ describe("useStartListening", () => {
     createLiveTranscriptMock.mockResolvedValue(undefined);
     applyLiveTranscriptDeltaToDatabaseMock.mockResolvedValue(undefined);
     softDeleteTranscriptMock.mockResolvedValue(undefined);
-    useConfigValueMock.mockImplementation((key) =>
-      key === "ai_language" ? "en" : [],
-    );
+    useConfigValueMock.mockImplementation((key) => {
+      if (key === "ai_language") return "en";
+      if (key === "microphone_device") return undefined;
+      return [];
+    });
     leftSidebarExpanded.value = true;
     useSTTConnectionMock.mockReturnValue({
       conn: {

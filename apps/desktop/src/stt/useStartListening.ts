@@ -65,6 +65,7 @@ export function useStartListening(sessionId: string) {
   const audioRetention = normalizeAudioRetention(
     useConfigValue("audio_retention"),
   );
+  const microphoneDevice = useConfigValue("microphone_device");
 
   const start = useListener((state) => state.start);
   const { conn } = useSTTConnection();
@@ -187,6 +188,7 @@ export function useStartListening(sessionId: string) {
         transcription_mode: liveTranscriptionConfig.transcriptionMode,
         participant_human_ids: participantHumanIds,
         self_human_id: session?.user_id || null,
+        mic_device: microphoneDevice || null,
       },
       {
         handlePersist,
@@ -223,6 +225,7 @@ export function useStartListening(sessionId: string) {
     conn,
     dictionaryTerms,
     hadTranscriptBeforeStart,
+    microphoneDevice,
     participantHumanIds,
     session,
     sessionId,

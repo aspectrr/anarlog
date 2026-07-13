@@ -17,6 +17,7 @@ vi.mock("./main-language", () => ({
     <span data-testid="main-language">{value}</span>
   ),
 }));
+vi.mock("./microphone", () => ({ MicrophoneSelector: () => null }));
 vi.mock("./notification", () => ({ NotificationSettingsView: () => null }));
 vi.mock("./permissions", () => ({ Permissions: () => null }));
 vi.mock("./spoken-languages", () => ({ SpokenLanguagesView: () => null }));

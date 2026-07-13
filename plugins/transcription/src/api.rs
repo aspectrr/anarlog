@@ -34,6 +34,8 @@ pub struct CaptureParams {
     pub participant_human_ids: Vec<String>,
     #[serde(default)]
     pub self_human_id: Option<String>,
+    #[serde(default)]
+    pub mic_device: Option<String>,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
@@ -227,6 +229,7 @@ impl From<CaptureParams> for listener::actors::SessionParams {
             keywords: value.keywords,
             participant_human_ids: value.participant_human_ids,
             self_human_id: value.self_human_id,
+            mic_device: value.mic_device,
         }
     }
 }
@@ -377,6 +380,7 @@ mod tests {
             transcription_mode: None,
             participant_human_ids: vec![],
             self_human_id: None,
+            mic_device: None,
         }
     }
 
