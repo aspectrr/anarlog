@@ -9,6 +9,7 @@ specta = ["dep:specta"]
 tauri-event = ["specta", "dep:tauri-specta"]
 
 [dependencies]
+diarize = { workspace = true }
 hypr-audio-chunking = { workspace = true }
 hypr-audio-utils = { workspace = true }
 hypr-denoise = { workspace = true, features = ["onnx"] }

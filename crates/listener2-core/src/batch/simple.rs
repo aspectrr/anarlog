@@ -247,6 +247,8 @@ pub(super) async fn run_soniqo_batch(
 
         let response = hypr_transcribe_soniqo::batch_response_from_channels(model, transcribed);
 
+        let response = apply_local_diarization(response, &params).await;
+
         Ok(BatchRunOutput {
             session_id: params.session_id,
             mode: BatchRunMode::Direct,
@@ -255,6 +257,74 @@ pub(super) async fn run_soniqo_batch(
     }
     .instrument(span)
     .await
+}
+
+async fn apply_local_diarization(
+    mut response: owhisper_interface::batch::Response,
+    params: &BatchParams,
+) -> owhisper_interface::batch::Response {
+    if !diarize::model_paths::models_exist() {
+        tracing::debug!(
+            hyprnote.stt.provider.name = "soniqo",
+            "diarization_models_not_downloaded_skipping"
+        );
+        return response;
+    }
+
+    let Some((seg_path, emb_path)) = diarize::model_paths::segmentation_model_path()
+        .zip(diarize::model_paths::embedding_model_path())
+    else {
+        return response;
+    };
+
+    let started_at = Instant::now();
+    let file_path = params.file_path.clone();
+    let num_speakers = params.num_speakers.map(|n| n as i32);
+
+    let result = tokio::task::spawn_blocking(move || {
+        let diarizer = diarize::Diarizer::with_num_speakers(&seg_path, &emb_path, num_speakers)?;
+        let segments = diarizer.diarize_file(&file_path)?;
+        Ok::<Vec<diarize::DiarizationSegment>, diarize::Error>(segments)
+    })
+    .await;
+
+    match result {
+        Ok(Ok(segments)) => {
+            tracing::info!(
+                hyprnote.stt.provider.name = "soniqo",
+                elapsed_ms = started_at.elapsed().as_millis() as u64,
+                diarization.segment_count = segments.len(),
+                diarization.speaker_count = segments
+                    .iter()
+                    .map(|s| s.speaker)
+                    .max()
+                    .map(|m| m + 1)
+                    .unwrap_or(0),
+                "local_diarization_completed"
+            );
+            for channel in &mut response.results.channels {
+                for alt in &mut channel.alternatives {
+                    diarize::assign_speakers_to_words(&mut alt.words, &segments);
+                }
+            }
+        }
+        Ok(Err(e)) => {
+            tracing::warn!(
+                hyprnote.stt.provider.name = "soniqo",
+                error = %e,
+                "local_diarization_failed"
+            );
+        }
+        Err(e) => {
+            tracing::warn!(
+                hyprnote.stt.provider.name = "soniqo",
+                error = %e,
+                "local_diarization_task_join_failed"
+            );
+        }
+    }
+
+    response
 }
 
 fn transcribe_soniqo_file(
