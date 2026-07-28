@@ -88,13 +88,18 @@ fn make_specta_builder<R: tauri::Runtime>() -> tauri_specta::Builder<R> {
             listener2::commands::is_supported_languages_batch::<tauri::Wry>,
             listener2::commands::suggest_providers_for_languages_batch::<tauri::Wry>,
             listener2::commands::list_documented_language_codes_batch::<tauri::Wry>,
+            listener2::commands::is_diarize_models_downloaded,
+            listener2::commands::download_diarize_models::<tauri::Wry>,
+            listener2::commands::delete_diarize_models,
+            listener2::commands::diarize_models_size_bytes,
         ])
         .events(tauri_specta::collect_events![
             CaptureLifecycleEvent,
             CaptureStatusEvent,
             CaptureDataEvent,
             TranscriptionEvent,
-            DenoiseEvent
+            DenoiseEvent,
+            listener2::commands::DiarizeDownloadEvent
         ])
         .error_handling(tauri_specta::ErrorHandlingMode::Result)
 }

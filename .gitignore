@@ -31,3 +31,7 @@ internal
 .codex-security-artifacts-*/
 .codex-security-work-ledger-*.jsonl
 .claude/launch.json
+
+# Pix Agent
+.pi/
+.pi-lens/

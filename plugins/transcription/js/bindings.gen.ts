@@ -173,6 +173,38 @@ async listDocumentedLanguageCodesBatch() : Promise<Result<string[], string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async isDiarizeModelsDownloaded() : Promise<Result<boolean, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("plugin:transcription|is_diarize_models_downloaded") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async downloadDiarizeModels() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("plugin:transcription|download_diarize_models") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async deleteDiarizeModels() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("plugin:transcription|delete_diarize_models") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async diarizeModelsSizeBytes() : Promise<Result<number, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("plugin:transcription|diarize_models_size_bytes") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -184,12 +216,14 @@ captureDataEvent: CaptureDataEvent,
 captureLifecycleEvent: CaptureLifecycleEvent,
 captureStatusEvent: CaptureStatusEvent,
 denoiseEvent: DenoiseEvent,
+diarizeDownloadEvent: DiarizeDownloadEvent,
 transcriptionEvent: TranscriptionEvent
 }>({
 captureDataEvent: "plugin:transcription:capture-data-event",
 captureLifecycleEvent: "plugin:transcription:capture-lifecycle-event",
 captureStatusEvent: "plugin:transcription:capture-status-event",
 denoiseEvent: "plugin:transcription:denoise-event",
+diarizeDownloadEvent: "plugin:transcription:diarize-download-event",
 transcriptionEvent: "plugin:transcription:transcription-event"
 })
 
@@ -219,6 +253,7 @@ export type ChannelProfile = "DirectMic" | "RemoteParty" | "MixedCapture"
 export type DegradedError = { type: "authentication_failed"; provider: string } | { type: "upstream_unavailable"; message: string } | { type: "connection_timeout" } | { type: "stream_error"; message: string }
 export type DenoiseEvent = { type: "denoiseStarted"; session_id: string } | { type: "denoiseProgress"; session_id: string; percentage: number } | { type: "denoiseCompleted"; session_id: string } | { type: "denoiseFailed"; session_id: string; error: string }
 export type DenoiseParams = { session_id: string; input_path: string; output_path: string }
+export type DiarizeDownloadEvent = { type: "progress"; percentage: number } | { type: "completed" } | { type: "failed"; error: string }
 export type FinalizedWord = { id: string; text: string; start_ms: number; end_ms: number; channel: number; state: WordState; speaker_index?: number | null }
 export type IdentityAssignment = { human_id: string; scope: IdentityScope }
 export type IdentityScope = { kind: "channel"; channel: ChannelProfile } | { kind: "channel_speaker"; channel: ChannelProfile; speaker_index: number } | { kind: "words"; word_ids: string[] }

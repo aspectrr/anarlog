@@ -1,0 +1,19 @@
+[package]
+name = "diarize"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bzip2 = "0.5"
+dirs = { workspace = true }
+eyre = "0.6"
+futures-util = { workspace = true }
+hound = { workspace = true }
+reqwest = { workspace = true, features = ["stream"] }
+sherpa-rs = { version = "0.6", default-features = false, features = ["download-binaries", "static"] }
+tar = "0.4"
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["rt", "fs"] }
+tracing = { workspace = true }
+
+owhisper-interface = { workspace = true }

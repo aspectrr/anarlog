@@ -24,6 +24,7 @@ exclude = [
 ]
 
 [workspace.dependencies]
+diarize = { path = "crates/diarize", package = "diarize" }
 hypr-aec = { path = "crates/aec", package = "aec" }
 hypr-afconvert = { path = "crates/afconvert", package = "afconvert" }
 hypr-agc = { path = "crates/agc", package = "agc" }

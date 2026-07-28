@@ -21,6 +21,8 @@ hypr-transcribe-soniqo = { workspace = true }
 hypr-transcript = { workspace = true }
 hypr-transcription-core = { workspace = true, features = ["specta", "tauri-event"] }
 
+diarize = { workspace = true }
+
 owhisper-client = { workspace = true }
 owhisper-interface = { workspace = true }
 
